@@ -57,74 +57,61 @@ app.layout = html.Div([dcc.Location(id="url"), sidebar, content])
 @app.callback(Output("page-content", "children"), [Input("url", "pathname")])
 
 def render_page_content(pathname):
-    if pathname == "/":
-        return html.Div(
-            [
-                html.H1("Select a genre"),
-                dcc.Dropdown(
-                    id="genre-dropdown",
-                    options=[{"label": k, "value": k} for k in genres],
-                    value=None,
-                    className="mb-4",
-                ),
-                html.Div(id="genre-output", className=""),
-            ]
-        )
-    elif pathname == "/system-2":
-        movies = get_displayed_movies()
-        return html.Div(
-            [
-                html.Div(
-                    [
-                        dbc.Row(
-                            [
-                                dbc.Col(
-                                    html.H1("Rate some movies below"),
-                                    width="auto",
+    pathname == "/system-2"
+    movies = get_displayed_movies()
+    return html.Div(
+        [
+            html.Div(
+                [
+                    dbc.Row(
+                        [
+                            dbc.Col(
+                                html.H1("Rate some movies below"),
+                                width="auto",
+                            ),
+                            dbc.Col(
+                                dbc.Button(
+                                    children=[
+                                        "Get recommendations ",
+                                        html.I(className="bi bi-emoji-heart-eyes-fill"),
+                                    ],
+                                    size="lg",
+                                    className="btn-success",
+                                    id="button-recommend",
                                 ),
-                                dbc.Col(
-                                    dbc.Button(
-                                        children=[
-                                            "Get recommendations ",
-                                            html.I(className="bi bi-emoji-heart-eyes-fill"),
-                                        ],
-                                        size="lg",
-                                        className="btn-success",
-                                        id="button-recommend",
-                                    ),
-                                    className="p-0",
-                                ),
-                            ],
-                            className="sticky-top bg-white py-2",
-                        ),
-                        html.Div(
-                            [
-                                get_movie_card(movie, with_rating=True)
-                                for idx, movie in movies.iterrows()
-                            ],
-                            className="row row-cols-1 row-cols-5",
-                            id="rating-movies",
-                        ),
-                    ],
-                    id="rate-movie-container",
-                ),
-                html.H1(
-                    "Your recommendations", id="your-recommendation",  style={"display": "none"}
-                ),
-                dcc.Loading(
-                    [
-                        dcc.Link(
-                            "Try again", href="/system-2", refresh=True, className="mb-2 d-block"
-                        ),
-                        html.Div(
-                            className="row row-cols-1 row-cols-5",
-                            id="recommended-movies",
-                        ),
-                    ],
-                    type="circle",
-                ),
-            ]
-        )
+                                className="p-0",
+                            ),
+                        ],
+                        className="sticky-top bg-white py-2",
+                    ),
+                    html.Div(
+                        [
+                            get_movie_card(movie, with_rating=True)
+                            for idx, movie in movies.iterrows()
+                        ],
+                        className="row row-cols-1 row-cols-5",
+                        id="rating-movies",
+                    ),
+                ],
+                id="rate-movie-container",
+            ),
+            html.H1(
+                "Your recommendations", id="your-recommendation",  style={"display": "none"}
+            ),
+            dcc.Loading(
+                [
+                    dcc.Link(
+                        "Try again", href="/system-2", refresh=True, className="mb-2 d-block"
+                    ),
+                    html.Div(
+                        className="row row-cols-1 row-cols-5",
+                        id="recommended-movies",
+                    ),
+                ],
+                type="circle",
+            ),
+        ]
+    )
     
 def get_movie_card(movie, with_rating=False):
     return html.Div(
